@@ -2,6 +2,8 @@ exports = operate
 
 export declare var zone: Zone
 
+zone = null
+
 const Timers: { set: string, clear: string, once: boolean }[] = [
   { set: 'setImmediate', clear: 'clearImmediate', once: true },
   { set: 'setInterval', clear: 'clearInterval', once: false },
@@ -31,7 +33,6 @@ export class Zone extends Promise<any> {
   value = undefined
   running = false
   blocking = true
-  callback = (callback: Function) => callback()
   tasks = new Set<Task>()
 
   private types = new Map<any, Map<any, Task>>()
@@ -46,6 +47,8 @@ export class Zone extends Promise<any> {
 
     if (options != null) Object.assign(this, options)
   }
+
+  callback = (callback: Function) => callback()
 
   add (type: any, id: any, cancel: () => void): Task {
     let task: Task = { type, id, cancel }
@@ -77,7 +80,7 @@ export class Zone extends Promise<any> {
   }
 
   cancel (): void {
-    for (var task of this.tasks.values()) {
+    for (let task of this.tasks.values()) {
       try { task.cancel() }
       catch (error) { this.reject(error) }
     }
@@ -112,26 +115,32 @@ export class Zone extends Promise<any> {
   }
 }
 
-let globals: any = {}
-
 for (let timer of Timers) {
   let set = global[timer.set]
   let clear = global[timer.clear]
   let type = set
 
   global[timer.set] = (callback: Function, ...args: any[]) => {
-    let id = set(() => {
-      if (timer.once) zone.delete(set, id)
-      callback()
-    }, ...args)
+    if (!zone) return set(callback, ...args)
 
-    let task = zone.add(type, id, () => global[timer.clear](id))
+    let id = set(
+      () => {
+        if (timer.once) zone.delete(set, id)
+        callback()
+      },
+      ...args)
+
+    zone.add(type, id, () => global[timer.clear](id))
+    return id
   }
   global[timer.clear] = (id: any) => {
+    if (!zone) return clear(id)
+
     // Verify that the task is owned by the current zone
     if (!zone.has(type, id)) return
 
     clear(id)
+
     zone.delete(type, id)
   }
 }
