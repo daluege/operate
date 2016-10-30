@@ -15,7 +15,7 @@ export interface ZoneOptions {
   callback?: (callback: Function) => any
 }
 
-export default function operate (callback: Function, options?: Zone, context?: any): PromiseLike<any> {
+export default function operate (callback: Function, options?: Zone, context: any = {}): PromiseLike<any> {
   let zone = new Zone(callback.name, options, context)
   setImmediate(() => zone.run(callback))
   return zone

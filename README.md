@@ -11,6 +11,95 @@ Install this package using NPM:
 
     npm install operate
 
+## Examples
+
+For a primer on zones, review the [Dart](https://www.dartlang.org/articles/libraries/zones) introduction.
+
+### General concept
+
+```javascript
+const operate = require('operate');
+const fs = require('fs');
+
+var fileContent = null;
+
+// An application that does multiple unknown asynchronous operations
+function application() {
+  function readFile () {
+    // Read file asynchronously
+    fs.readFile('data.txt', function callback (data) {
+      fileContent = data;
+    });
+  }
+  // Wait for 1 second and then start a request
+  setTimeout(readFile, 1000);
+}
+
+operate(application).then(
+  function () {
+    console.log('This file content has been read: ' + fileContent);
+  }
+).catch(
+  function (error) {
+    console.log('Either setTimeout or fs.readFile threw an uncatched error');
+  }
+);
+```
+
+### Run untrusted code asynchronously
+
+```javascript
+const operate = require('operate');
+const vm = require('vm');
+
+var sandbox = {
+  setTimeout,
+  setInterval,
+  setImmediate,
+  console
+};
+
+// Use operate and vm to run a program in an isolated environment
+operate(
+  function () {
+    vm.runInNewContext(applicationCode, sandbox);
+  }
+).then(
+  function () { console.log('Terminated successfully'); }
+).catch(
+  function (error) { console.log('An error occurred'); }
+);
+```
+
+### Terminate a zone from outside
+
+```javascript
+var zone = operate(application);
+
+// Cancel all pending events after 1 minute
+
+setTimeout(function () {
+  zone.cancel();
+}, 60000);
+
+// If node is stalling due to pending tasks in the operating zone,
+// zone.cancel() will unstall it.
+```
+
+### Executing zones parallely
+
+```javascript
+Promise.all(
+  operate(app1),
+  operate(app2),
+  operate(app3)
+).then(
+  function() { console.log('All tasks have concluded successfully'); }
+).catch(
+  function() { console.log('An error occurred'); }
+)
+```
+
 ## License
 
 MIT © 2016 ([see full text](./LICENSE))
