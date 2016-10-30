@@ -1,0 +1,37 @@
+{
+  "name": "operate",
+  "version": "0.0.2",
+  "description": "Zones for JavaScript with Promise support",
+  "main": "dist/operate.js",
+  "scripts": {
+    "prepublish": "npm run clean && typings install && npm run build",
+    "postpublish": "npm run deploy",
+    "test": "ts-node node_modules/tape/bin/tape src/test.ts",
+    "lint": "tslint src/**/*.ts",
+    "build": "tsc",
+    "dist": "npm run build && webpack --optimize-minimize dist/operate.js dist/browser.js",
+    "clean": "rm -rf dist",
+    "deploy": "npm run dist"
+  },
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daluege/operate.git"
+  },
+  "author": "Filip Dalüge <daluege@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daluege/operate/issues"
+  },
+  "homepage": "https://github.com/daluege/operate",
+  "devDependencies": {
+    "gh-pages": "^0.11.0",
+    "tape": "^4.6.0",
+    "ts-node": "^1.3.0",
+    "tslint": "^3.15.1",
+    "tslint-config-standard": "^1.5.0",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.2",
+    "webpack": "^1.13.1"
+  }
+}
