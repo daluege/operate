@@ -49,14 +49,13 @@ operate(application).then(
 ### Run untrusted code asynchronously
 
 ```javascript
-const operate = require('operate');
 const vm = require('vm');
 
 var sandbox = {
   setTimeout,
   setInterval,
   setImmediate,
-  console
+  print: console.log
 };
 
 // Use operate and vm to run a program in an isolated environment
@@ -97,7 +96,7 @@ Promise.all(
   function() { console.log('All tasks have concluded successfully'); }
 ).catch(
   function() { console.log('An error occurred'); }
-)
+);
 ```
 
 ## License
