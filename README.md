@@ -49,14 +49,13 @@ operate(application).then(
 ### Run untrusted code asynchronously
 
 ```javascript
-const operate = require('operate');
 const vm = require('vm');
 
 var sandbox = {
   setTimeout,
   setInterval,
   setImmediate,
-  console
+  print: console.log
 };
 
 // Use operate and vm to run a program in an isolated environment
@@ -97,7 +96,33 @@ Promise.all(
   function() { console.log('All tasks have concluded successfully'); }
 ).catch(
   function() { console.log('An error occurred'); }
-)
+);
+```
+
+### Run untrusted applications in non-blocking mode
+
+```javascript
+// Run a huge number of untrusted applications in non-blocking mode
+for (var i = 0; i < applications.length; i++) {
+  operate(applications[i], { blocking: false });
+}
+
+function application () {
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "data.txt", false);
+  } catch (error) {
+    console.log(error); // Error: No permission to execute the synchronous system operation XMLHttpRequest.open
+  }
+
+  try {
+    var xhr = fs.readfileSync('data.txt');
+  } catch (error) {
+    console.log(error); // Error: No permission to execute the synchronous system operation fs.readFileSync
+  }
+}
+
+operate(application);
 ```
 
 ## License
