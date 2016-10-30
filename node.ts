@@ -25,7 +25,7 @@ if ('binding' in process) {
             let req = args[args.length - 1]
             if (typeof req !== 'function' || req.oncomplete) {
               // Function was called with no request handler so it would be executed synchronously
-              throw new Error(`No permission to execute the synchronous system operation ${id}.${symbol}`)
+              throw new Error(`No permission to execute the synchronous system operation ${id}.${symbol}()`)
             }
           }
           return func.apply(this, args)

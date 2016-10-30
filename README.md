@@ -13,7 +13,8 @@ Install this package using NPM:
 
 ## Examples
 
-For a primer on zones, review the [Dart](https://www.dartlang.org/articles/libraries/zones) introduction.
+For a primer on zones, review the [Dart](https://www.dartlang.org/articles/libraries/zones) overview.
+For more on promises, check out this [Google Developers](https://developers.google.com/web/fundamentals/getting-started/primers/promises) introduction.
 
 ### General concept
 
@@ -58,7 +59,7 @@ var sandbox = {
   print: console.log
 };
 
-// Use operate and vm to run a program in an isolated environment
+// Use operate with vm to run a program in an isolated environment
 operate(
   function () {
     vm.runInNewContext(applicationCode, sandbox);
@@ -85,7 +86,7 @@ setTimeout(function () {
 // zone.cancel() will unstall it.
 ```
 
-### Executing zones parallely
+### Execute zones parallely
 
 ```javascript
 Promise.all(
@@ -99,7 +100,7 @@ Promise.all(
 );
 ```
 
-### Run untrusted applications in non-blocking mode
+### Non-blocking mode
 
 ```javascript
 // Run a huge number of untrusted applications in non-blocking mode
@@ -112,17 +113,17 @@ function application () {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "data.txt", false);
   } catch (error) {
-    console.log(error); // Error: No permission to execute the synchronous system operation XMLHttpRequest.open
+    console.log(error); // Error: No permission to execute the synchronous system operation XMLHttpRequest.prototype.open()
   }
 
   try {
     var xhr = fs.readfileSync('data.txt');
   } catch (error) {
-    console.log(error); // Error: No permission to execute the synchronous system operation fs.readFileSync
+    console.log(error); // Error: No permission to execute the synchronous system operation fs.readFileSync()
   }
 }
 
-operate(application);
+operate(application, { blocking: false });
 ```
 
 ## License
