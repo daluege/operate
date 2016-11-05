@@ -1,6 +1,6 @@
 {
   "name": "operate",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Zones for JavaScript with Promise support",
   "main": "dist/node.js",
   "browser": "dist/browser.js",
@@ -10,11 +10,11 @@
     "test": "ts-node node_modules/tape/bin/tape test.ts && npm run lint",
     "lint": "tslint *.ts",
     "build": "tsc",
-    "dist": "npm run build && webpack --optimize-minimize dist/operate.js dist/browser.js",
+    "dist": "npm run build && webpack dist/operate.js dist/browser.js && babili -s --no-comments --compact true dist/browser.js -o dist/browser.js",
     "clean": "rm -rf dist",
     "deploy": "npm run dist"
   },
-  "typings": "dist/index.d.ts",
+  "typings": "dist/operate.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/daluege/operate.git"
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/daluege/operate",
   "devDependencies": {
+    "babili": "0.0.7",
     "gh-pages": "^0.11.0",
     "tape": "^4.6.0",
     "ts-node": "^1.3.0",
