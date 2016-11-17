@@ -1,6 +1,6 @@
 {
   "name": "operate",
-  "version": "0.0.4",
+  "version": "0.5.0",
   "description": "Zones for JavaScript with Promise support",
   "main": "dist/node.js",
   "browser": "dist/browser.js",
